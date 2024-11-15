@@ -1,0 +1,159 @@
+{% liquid
+  assign goal_currency = 'goal_' | append: localization.country.currency.iso_code | downcase
+  assign total = cart.total_price
+  assign goal_amount = 0
+  assign current_iso_code = localization.country.iso_code | upcase
+
+  assign list_of_goals = ''
+  assign not_show_in = ''
+  for goal in shop.metaobjects.cart_goals.values
+    assign not_show_in = goal.not_show_in | join: ','
+    unless not_show_in contains current_iso_code
+      assign show_in_country = goal.show_in_country | join: ','
+      unless goal.show_in_country
+        assign list_of_goals = goal.system.id | append: list_of_goals | append: ','
+      else
+        if goal.is_active and show_in_country contains current_iso_code
+          assign list_of_goals = goal.system.id | append: list_of_goals | append: ','
+        endif
+      endunless
+
+      if goal_amount < goal[goal_currency].value and list_of_goals contains goal.system.id
+        assign goal_amount = goal[goal_currency].value
+      endif
+    endunless
+  endfor
+
+  for item in cart.items
+    for goal in shop.metaobjects.cart_goals.values
+      if goal.is_active and list_of_goals contains goal.system.id
+        if item.id == goal.gifted_product.value.id
+          assign total = total | minus: item.final_line_price
+        endif
+      endif
+    endfor
+  endfor
+
+  assign percentage = total | times: 1.0 | divided_by: goal_amount
+  if percentage > 1
+    assign percentage = 1
+  endif
+  assign goal_text = ''
+
+  assign cart_goal_product_ids = ''
+  for goal in shop.metaobjects.cart_goals.values
+    if goal.is_active
+      assign cart_goal_product_ids = cart_goal_product_ids | append: goal.gifted_product.value.id | append: ','
+    endif
+  endfor
+  assign cart_goal_product_ids = cart_goal_product_ids | split: ','
+%}
+
+<cart-progress-bar class="progress-bar__wrapper" data-total="{{ total }}">
+  <div class="progress-bar__bar">
+    {% assign sorted_goals = shop.metaobjects.cart_goals.values | sort: 'name' %}
+    {% for goal in sorted_goals %}
+      {% if goal.is_active and list_of_goals contains goal.system.id %}
+        {% if goal.description and goal[goal_currency].value > total and goal_text == empty %}
+          {% assign goal_text = goal.description %}
+          {% assign goal_rest = goal[goal_currency] | minus: total %}
+          {% assign goal_money = goal_rest | money %}
+        {% endif %}
+        {% assign position = goal[goal_currency].value | times: 1.0 | divided_by: goal_amount | times: 100 %}
+        <div
+          class="progress-bar__goal right {% if goal[goal_currency] < total %}active{% endif %}"
+          data-goal="{{ goal[goal_currency] }}"
+          style="right: {{ 100 | minus: position }}%"
+          data-testing="{{ goal.gifted_product.value }}"
+          data-product="{%- if goal.gifted_product -%}{{ goal.gifted_product.value.id }}{%- else -%}FREESHIPPING{%- endif -%}"
+        >
+          {% if goal.title %}
+            <span>{{ goal.title }}</span>
+          {% else %}
+            <span>{{ goal[goal_currency] | money }}</span>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <div class="progress-bar__progress" style="width: {{ percentage | times: 100 }}%"></div>
+  </div>
+  <div class="progress-bar__info-wrapper">
+    {% assign show_goal = true %}
+    {% for goal in sorted_goals %}
+      {% if goal.is_active and list_of_goals contains goal.system.id %}
+        <!-- FOR GN-0043 -->
+        {% assign goal_rest = goal[goal_currency].value | minus: total %}
+        {% assign goal_money = goal_rest | money %}
+        {% if block.settings.show_every_goal %}
+          <div
+            class="progress-bar__info {% if goal[goal_currency].value < total %}active{% endif %}"
+            data-goal="{{ goal[goal_currency].value }}"
+          >
+            {% if goal_money < 0 %}
+              <span>{{ goal.description | metafield_tag | replace: '$$money$$', goal_money }}</span>
+            {% endif %}
+          </div>
+        {% else %}
+          {% if show_goal and goal[goal_currency].value > total %}
+            <div
+              class="progress-bar__info {% if goal[goal_currency].value < total %}active{% endif %}"
+              data-goal="{{ goal[goal_currency].value }}"
+            >
+              {% if goal[goal_currency].value > total %}
+                <span>{{ goal.description | metafield_tag | replace: '$$money$$', goal_money }}</span>
+              {% endif %}
+              {% assign show_goal = false %}
+            </div>
+          {% elsif goal_amount < total %}
+            {% if forloop.last %}
+              <span>{{- 'cart.general.got-all-free-products' | t -}}</span>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</cart-progress-bar>
+{% liquid
+  assign skip_gift = false
+  for item in cart.items
+    assign variant_id = item.variant_id | append: ''
+    if cart_goal_product_ids contains variant_id
+      assign skip_gift = true
+      break
+    endif
+  endfor
+%}
+
+{% unless skip_gift %}
+  {% for goal in sorted_goals %}
+    {% unless goal.is_free_shipping %}
+      {% if goal.is_active %}
+        {% if goal[goal_currency].value < total and goal.gifted_product.value.id %}
+          <div
+            class="free-product__container {{ goal.is_free_shipping }}"
+            data-product="{{ goal.gifted_product.value.id }}"
+          >
+            {{
+              goal.gifted_product.value.product.featured_media
+              | image_url: width: 92
+              | image_tag: class: 'free-product__image'
+            }}
+            <div>
+              <h3 class="free-product__title">{{ goal.gifted_product.value.product.title }}</h3>
+              <div class="free-product__price">
+                <p class="free-product__old-price">
+                  <s>{{ goal.gifted_product.value.product.compare_at_price | money }}</s>
+                </p>
+                <p class="free-product__new-price">{{ 0 | money }}</p>
+              </div>
+              <button class="free-product__add-button">{{ 'cart.general.add_item' | t }}</button>
+            </div>
+          </div>
+          {% break %}
+        {% endif %}
+      {% endif %}
+    {% endunless %}
+  {% endfor %}
+{% endunless %}
