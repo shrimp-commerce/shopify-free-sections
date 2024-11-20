@@ -1,0 +1,72 @@
+<div class="coupon-code__wrapper">
+  <div class="coupon-code__title">
+    {% if block.settings.coupon_percentage %}
+      <div class="coupon-code__discount">-{{ block.settings.coupon_percentage }}%</div>
+    {% endif %}
+    <div class="coupon-code__headline shrimp-text--{{ text_alignment }}">{{ block.settings.headline }}</div>
+    <button class="coupon-code__button" style="background-color: {{ block.settings.border_color }};">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="black"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="copy-icon"
+      >
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <span class="coupon-code__code">{{ block.settings.coupon_code }}</span>
+      <span class="coupon-code__success-message">{{ block.settings.copy_text }}</span>
+    </button>
+  </div>
+  <div class="coupon-code__content shrimp-text--{{ text_alignment }}">
+    <span class="coupon-code__text">{{ block.settings.text }}</span>
+  </div>
+  <div class="coupon-code__price shrimp-text--{{ text_alignment }}">
+    {% assign discount = product.selected_or_first_available_variant.price
+      | times: block.settings.coupon_percentage
+      | divided_by: 100
+    %}
+    <span class="price">{{ product.selected_or_first_available_variant.price | minus: discount | money }} </span>
+    <span class="compareAtPrice">{{ product.selected_or_first_available_variant.price | money }} </span>
+  </div>
+</div>
+
+<style>
+  .coupon-code__wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .coupon-code__title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .coupon-code__button {
+    position: relative;
+  }
+  .coupon-code__discount {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .copy-icon {
+    height: 16px;
+    width: 16px;
+  }
+  .button-wrapper svg {
+    fill: none !important;
+  }
+  .coupon-code__price .price{
+    font-size: x-large;
+  }
+  .coupon-code__button .coupon-code__success-message {
+    left: 110%;
+  }
+</style>

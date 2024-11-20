@@ -1,0 +1,66 @@
+<h2 class="coupon-title">
+  <div class="coupon-title__text shrimp-text--{{ text_alignment }}">
+    <span class="coupon-code__code">{{ block.settings.coupon_code }}</span>
+    <div class="button-wrapper" style="position: relative">
+      <button class="coupon-code__button" style="background-color: {{ block.settings.border_color }};">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="black"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="copy-icon"
+        >
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+      <span class="coupon-code__success-message">{{ block.settings.copy_text }}</span>
+    </div>
+  </div>
+</h2>
+<div class="coupon-code__price shrimp-text--{{ text_alignment }}">
+  {% assign discount = product.selected_or_first_available_variant.price
+    | times: block.settings.coupon_percentage
+    | divided_by: 100
+  %}
+  <span class="price">{{ product.selected_or_first_available_variant.price | minus: discount | money }} </span>
+  <span class="compareAtPrice">{{ product.selected_or_first_available_variant.price | money }} </span>
+</div>
+<div class="coupon-code__headline shrimp-text--{{ text_alignment }}">{{ block.settings.headline }}</div>
+<p class="coupon-code__text shrimp-text--{{ text_alignment }}">{{ block.settings.text }}</p>
+<div class="coupon-code-container"></div>
+
+<style>
+  .coupon-code__headline {
+    font-size: larger;
+    font-weight: bold;
+    color: rgb(var(--color-foreground));
+  }
+  .coupon-code-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .coupon-code-section .button-wrapper {
+    display: inline-block;
+  }
+  .coupon-code__code {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  .button-wrapper svg {
+    fill: none !important;
+  }
+  .coupon-code__price .price{
+    font-size: x-large;
+  }
+  .button-wrapper {
+    display: inline-block;
+  }
+</style>

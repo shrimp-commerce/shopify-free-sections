@@ -1,0 +1,86 @@
+{% assign text_alignment = block.settings.text_alignment %}
+
+<div
+  id="{{ section.id }}"
+  class="coupon-code__wrapper"
+  style="background-color: {{ block.settings.background_color }}; border: {{ block.settings.border_size }}px dashed {{ block.settings.border_color }};"
+>
+  {% liquid
+    case block.settings.design
+      when "1":
+        render 'coupon-code-1', block: block, text_alignment: text_alignment
+      when "2":
+        render 'coupon-code-2', block: block, text_alignment: text_alignment
+    endcase
+  %}
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const copyButton = document.querySelector('.coupon-code__wrapper#{{ section.id }} .coupon-code__button');
+    const couponCode = document.querySelector('.coupon-code__wrapper#{{ section.id }} .coupon-code__code');
+    const successMessage = document.querySelector('.coupon-code__wrapper#{{ section.id }} .coupon-code__success-message');
+
+    copyButton.addEventListener('click', function () {
+      navigator.clipboard.writeText(couponCode.innerText).then(
+        () => {
+          successMessage.classList.add('active');
+          setTimeout(() => {
+            successMessage.classList.remove('active');
+          }, 2000);
+        },
+        (error) => console.log('error copying coupon code')
+      );
+    });
+  });
+</script>
+
+<style>
+  .shrimp-text--left {
+    text-align: left;
+  }
+  .shrimp-text--center {
+    text-align: center;
+  }
+  .shrimp-text--right {
+    text-align: right;
+  }
+  .coupon-code__wrapper {
+    padding: 4px 4px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+  }
+  .coupon-code__success-message {
+    transition: 0.175s all ease-in-out;
+    font-size: 12px;
+    position: absolute;
+    display: block;
+    left: 125%;
+    top: 0;
+    width: 100px;
+    text-align: left;
+    opacity: 0;
+  }
+  .coupon-code__success-message.active {
+    opacity: 1;
+  }
+  .coupon-code__button {
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border: 1px solid #00000010;
+    display: flex;
+    border-radius: 8px;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+  }
+  .coupon-code__button:hover {
+    background-color: #0056b3;
+  }
+  .coupon-code__price .compareAtPrice{
+    text-decoration: line-through;
+  }
+</style>
