@@ -2,7 +2,11 @@
   <div class="coupon-title__text shrimp-text--{{ text_alignment }}">
     <span class="coupon-code__code">{{ block.settings.coupon_code }}</span>
     <div class="button-wrapper" style="position: relative">
-      <button class="coupon-code__button" style="background-color: {{ block.settings.border_color }};">
+      <button
+        class="coupon-code__button"
+        data-code="{{ block.settings.coupon_code }}"
+        style="background-color: {{ block.settings.border_color }};"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"
@@ -23,6 +27,7 @@
     </div>
   </div>
 </h2>
+
 <div class="coupon-code__price shrimp-text--{{ text_alignment }}">
   {% assign discount = product.selected_or_first_available_variant.price
     | times: block.settings.coupon_percentage
@@ -31,6 +36,7 @@
   <span class="price">{{ product.selected_or_first_available_variant.price | minus: discount | money }} </span>
   <span class="compareAtPrice">{{ product.selected_or_first_available_variant.price | money }} </span>
 </div>
+
 <div class="coupon-code__headline shrimp-text--{{ text_alignment }}">{{ block.settings.headline }}</div>
 <p class="coupon-code__text shrimp-text--{{ text_alignment }}">{{ block.settings.text }}</p>
 <div class="coupon-code-container"></div>
@@ -57,7 +63,7 @@
   .button-wrapper svg {
     fill: none !important;
   }
-  .coupon-code__price .price{
+  .coupon-code__price .price {
     font-size: x-large;
   }
   .button-wrapper {

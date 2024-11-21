@@ -1,6 +1,6 @@
 {% assign text_alignment = block.settings.text_alignment %}
 
-<div
+<coupon-code
   id="{{ section.id }}"
   class="coupon-code__wrapper"
   style="background-color: {{ block.settings.background_color }}; border: {{ block.settings.border_size }}px dashed {{ block.settings.border_color }};"
@@ -13,29 +13,46 @@
         render 'coupon-code-2', block: block, text_alignment: text_alignment
     endcase
   %}
-</div>
+</coupon-code>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const copyButton = document.querySelector('.coupon-code__wrapper#{{ section.id }} .coupon-code__button');
-    const couponCode = document.querySelector('.coupon-code__wrapper#{{ section.id }} .coupon-code__code');
-    const successMessage = document.querySelector('.coupon-code__wrapper#{{ section.id }} .coupon-code__success-message');
+  class CouponCodeElement extends HTMLElement {
+    constructor() {
+      super();
+    }
 
-    copyButton.addEventListener('click', function () {
-      navigator.clipboard.writeText(couponCode.innerText).then(
-        () => {
-          successMessage.classList.add('active');
-          setTimeout(() => {
-            successMessage.classList.remove('active');
-          }, 2000);
-        },
-        (error) => console.log('error copying coupon code')
-      );
-    });
-  });
+    connectedCallback() {
+      this.initCouponCode();
+    }
+
+    initCouponCode() {
+      const copyButton = this.querySelector('.coupon-code__button');
+      const successMessage = this.querySelector('.coupon-code__success-message');
+
+      if (copyButton) {
+        copyButton.addEventListener('click', (event) => {
+          event.preventDefault();
+          const couponCode = this.querySelector('.coupon-code__code');
+          navigator.clipboard.writeText(couponCode?.innerText || '').then(
+            () => {
+              successMessage.classList.add('active');
+              setTimeout(() => {
+                successMessage.classList.remove('active');
+              }, 2000);
+            },
+            (error) => console.log('Fehler beim Kopieren des Gutscheincodes', error)
+          );
+        });
+      }
+    }
+  }
+  window.customElements.define('coupon-code', CouponCodeElement);
 </script>
 
 <style>
+  coupon-code {
+    display: block;
+  }
   .shrimp-text--left {
     text-align: left;
   }
@@ -80,7 +97,7 @@
   .coupon-code__button:hover {
     background-color: #0056b3;
   }
-  .coupon-code__price .compareAtPrice{
+  /*.coupon-code__price .compareAtPrice{
     text-decoration: line-through;
-  }
+  }*/
 </style>
