@@ -3,6 +3,10 @@
 If you have any questions, feel free to write us at info@shrimp-commerce.com
 We will help you implement your free sections.
 
+[Shrimp Commerce 🦐](https://shrimp-commerce.com)
+
+We build Shopify stores for more than 5 years now.
+
 ### German and English speaking
 
 ## Collection Bubble
