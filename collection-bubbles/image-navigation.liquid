@@ -1,0 +1,69 @@
+{{ 'component-image-navigation.css' | asset_url | stylesheet_tag }}
+
+<style>
+    .image-navigation__image{
+        width: {{ section.settings.image_size }}px;
+        height: {{ section.settings.image_size }}px;
+    }
+    .image-navigation__image img{
+      width: {{ section.settings.image_size }}px;
+      height: {{ section.settings.image_size }}px;
+  }
+</style>
+
+<image-navigation>
+  <div class="image-navigation__wrapper">
+    {% for block in section.blocks %}
+      <a href="{{ block.settings.collection.url }}">
+        <div class="image-navigation__collection">
+          {% if block.settings.image %}
+            <div class="image-navigation__image" id="image-navigation__image-{{ block.id }}">
+              {{ block.settings.image | image_url: width: section.settings.image_size | image_tag: loading: 'eager' }}
+            </div>
+          {% endif %}
+          <nav>
+            {% if block.settings.title -%}
+              {{- block.settings.title -}}
+            {%- else -%}
+              {{- block.settings.collection.title -}}
+            {%- endif %}
+          </nav>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</image-navigation>
+{% schema %}
+{
+  "name": "Image Navigation",
+  "class": "section-image-navigation",
+  "settings": [
+    {
+      "type": "number",
+      "id": "image_size",
+      "label": "Image Width",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "label": "Title",
+          "type": "text",
+          "id": "title"
+        },
+        { "type": "image_picker", "id": "image", "label": "Image" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Image Navigation" }]
+}
+{% endschema %}

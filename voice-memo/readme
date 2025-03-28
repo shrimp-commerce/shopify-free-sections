@@ -1,0 +1,28 @@
+```
+{%- when 'voice_memo' -%}
+        <sc-voice-player
+          audio="{{ block.settings.voice_file_url }}"
+          avatar="{%if block.settings.voice_avatar %}{{ block.settings.voice_avatar | image_url: height: 80}}{% endif %}"
+        >
+        </sc-voice-player>
+
+```
+
+# settings
+
+```
+{
+      "type": "voice_memo",
+      "name": "Voice Memo",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "File"
+        },
+        { "type": "url", "id": "voice_file_url", "label": "Audio File URL" },
+        { "type": "image_picker", "id": "voice_avatar", "label": "Avatar" }
+      ]
+    }
+
+```

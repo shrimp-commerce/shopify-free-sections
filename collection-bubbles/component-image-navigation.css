@@ -1,0 +1,27 @@
+.image-navigation__wrapper{
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    margin-block-start: 12px;
+    margin-block-end: 12px;
+}
+.image-navigation__collection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+}
+.image-navigation__image{
+    border-radius: 200px;
+    object-fit: cover;
+}
+.image-navigation__collection img{
+    border-radius: 200px;
+
+}

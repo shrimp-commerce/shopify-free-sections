@@ -1,0 +1,83 @@
+
+.sc-voice-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f1f1f1; /* z.B. ein helles Beige */
+    padding: 1rem;
+    border-radius: 16px;
+    justify-content: space-between;
+    width: 320px;
+    max-width: 100%;
+  }
+  
+  .sc-voice-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .sc-voice-waves {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .sc-voice-wave-bar {
+    width: 2px;
+    height: 14px;
+    border-radius: 4px;
+    background: #aaa;
+    transition: background-color 0.2s;
+  }
+  .sc-voice-wave-bar.active {
+    background: #000;
+  }
+  
+  .sc-voice-timeDisplay {
+    font-size: 0.875rem;
+    color: rgb(var(--text-color));
+    min-width: 60px;
+    text-align: right;
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+  
+  
+  .sc-voice-control-wrapper, .sc-voice-wrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .sc-voice-player {
+    width: 32px;
+    height: 32px;
+    background: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .sc-voice-player-play, .sc-voice-player-pause{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 19px;
+  }
+  .sc-voice-player-play svg,
+  .sc-voice-player-pause svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .sc-voice-waves div:nth-child(3), .sc-voice-waves div:nth-child(8), .sc-voice-waves div:nth-child(10), .sc-voice-waves div:nth-child(14), .sc-voice-waves div:nth-child(15), .sc-voice-waves div:nth-child(18), .sc-voice-waves div:nth-child(20){
+    height: 15px;
+  }
+  .sc-voice-waves div:nth-child(2), .sc-voice-waves div:nth-child(5), .sc-voice-waves div:nth-child(6), .sc-voice-waves div:nth-child(12), .sc-voice-waves div:nth-child(16), .sc-voice-waves div:nth-child(17), .sc-voice-waves div:nth-child(19){
+    height: 18px
+  }
